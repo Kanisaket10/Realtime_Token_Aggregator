@@ -12,6 +12,7 @@ let started = false;
 export function startTokenUpdater(io: Server) {
   if (started) return;
   started = true;
+  
   setInterval(async () => {
     for (const token of seedTokens) {
       try {
