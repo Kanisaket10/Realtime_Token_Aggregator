@@ -4,5 +4,6 @@ dotenv.config();
 
 export const env = {
   port: process.env.PORT || 3000,
-  dexScreenerBaseUrl: process.env.DEX_SCREENER_BASE_URL || ""
+  dexScreenerBaseUrl: process.env.DEX_SCREENER_BASE_URL || "",
+  jupiterBaseUrl: process.env.JUPITER_BASE_URL || ""
 };
