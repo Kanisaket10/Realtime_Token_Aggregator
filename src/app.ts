@@ -2,6 +2,7 @@ import express from "express";
 import { fetchTokenByAddress } from "./services/dexScreener.service";
 import { searchJupiterToken } from "./services/jupiter.service";
 import { fetchAggregatedToken } from "./services/tokenAggregator.service";
+import tokensRoute from "./routes/tokens.route";
 
 
 const app = express();
@@ -10,6 +11,8 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
+
+app.use("/tokens", tokensRoute);
 
 // dev-only route
 app.get("/debug/token/:address", async (req, res) => {

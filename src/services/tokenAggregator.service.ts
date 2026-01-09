@@ -2,11 +2,22 @@ import { fetchTokenByAddress } from "./dexScreener.service";
 import { searchJupiterToken } from "./jupiter.service";
 import { mergeTokens } from "../utils/mergeTokens";
 import { Token } from "../models/token.model";
+import {
+  getCachedToken,
+  setCachedToken
+} from "../cache/token.cache";
 
 export async function fetchAggregatedToken(
   tokenAddress: string,
   symbolHint?: string
 ): Promise<Token> {
+    const cacheKey = `token:${tokenAddress}`;
+
+  const cached = await getCachedToken(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   const dexToken = await fetchTokenByAddress(tokenAddress);
 
   // Jupiter search is best-effort
@@ -14,5 +25,9 @@ export async function fetchAggregatedToken(
     ? await searchJupiterToken(symbolHint)
     : null;
 
-  return mergeTokens(dexToken, jupiterToken);
+  const merged = mergeTokens(dexToken, jupiterToken);
+
+  await setCachedToken(cacheKey, merged);
+
+  return merged;
 }
