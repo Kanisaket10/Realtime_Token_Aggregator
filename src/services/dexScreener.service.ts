@@ -1,5 +1,6 @@
 import axios from "axios";
 import { env } from "../config/env";
+import { withRetry } from "../utils/retry";
 
 const client = axios.create({
   baseURL: env.dexScreenerBaseUrl,
@@ -7,14 +8,13 @@ const client = axios.create({
 });
 
 export async function fetchTokenByAddress(tokenAddress: string) {
-  try {
-    const response = await client.get(
-      `/latest/dex/tokens/${tokenAddress}`
+    return withRetry(async () => {
+       const response = await client.get(
+        `/latest/dex/tokens/${tokenAddress}`
+       );
+       return response.data;
+    },
+    3,
+    500
     );
-
-    return response.data;
-  } catch (error) {
-    console.error("[dexScreener] fetch failed", tokenAddress);
-    throw error;
-  }
 }
