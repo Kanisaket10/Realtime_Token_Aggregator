@@ -1,6 +1,8 @@
 import express from "express";
 import { fetchTokenByAddress } from "./services/dexScreener.service";
 import { searchJupiterToken } from "./services/jupiter.service";
+import { fetchAggregatedToken } from "./services/tokenAggregator.service";
+
 
 const app = express();
 app.use(express.json());
@@ -28,6 +30,16 @@ app.get("/debug/jupiter/:query", async (req, res) => {
   }
 });
 
-
+app.get("/debug/aggregate/:address/:symbol", async (req, res) => {
+  try {
+    const data = await fetchAggregatedToken(
+      req.params.address,
+      req.params.symbol
+    );
+    res.json(data);
+  } catch {
+    res.status(500).json({ error: "failed to aggregate token" });
+  }
+});
 
 export default app;
